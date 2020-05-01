@@ -178,6 +178,11 @@ keys = [
              desc='Dmenu system monitor script'
              ),
          Key(
+             ["mod1", "control"], "p",
+             lazy.spawn("passmenu"),
+             desc='Passmenu'
+             ),
+         Key(
              ["mod1", "control"], "r",
              lazy.spawn("./.dmenu/dmenu-reddio.sh"),
              desc='Dmenu reddio script'
@@ -199,16 +204,78 @@ keys = [
              ),
          ### My applications launched with SUPER + ALT + KEY
          Key(
+             [mod, "mod1"], "b",
+             lazy.spawn("tabbed -r 2 surf -pe x '.surf/html/homepage.html'"),
+             desc='lynx browser'
+             ),
+         Key(
+             [mod, "mod1"], "l",
+             lazy.spawn(myTerm+" -e lynx gopher://distro.tube"),
+             desc='lynx browser'
+             ),
+         Key(
+             [mod, "mod1"], "n",
+             lazy.spawn(myTerm+" -e newsboat"),
+             desc='newsboat'
+             ),
+         Key(
+             [mod, "mod1"], "r",
+             lazy.spawn(myTerm+" -e rtv"),
+             desc='reddit terminal viewer'
+             ),
+         Key(
+             [mod, "mod1"], "e",
+             lazy.spawn(myTerm+" -e neomutt"),
+             desc='neomutt'
+             ),
+         Key(
+             [mod, "mod1"], "m",
+             lazy.spawn(myTerm+" -e sh ./scripts/toot.sh"),
+             desc='toot mastodon cli'
+             ),
+         Key(
              [mod, "mod1"], "t",
              lazy.spawn(myTerm+" -e sh ./scripts/tig-script.sh"),
              desc='tig'
+             ),
+         Key(
+             [mod, "mod1"], "f",
+             lazy.spawn(myTerm+" -e sh ./.config/vifm/scripts/vifmrun"),
+             desc='vifm'
+             ),
+         Key(
+             [mod, "mod1"], "j",
+             lazy.spawn(myTerm+" -e joplin"),
+             desc='joplin'
+             ),
+         Key(
+             [mod, "mod1"], "c",
+             lazy.spawn(myTerm+" -e cmus"),
+             desc='cmus'
+             ),
+         Key(
+             [mod, "mod1"], "i",
+             lazy.spawn(myTerm+" -e irssi"),
+             desc='irssi'
+             ),
+         Key(
+             [mod, "mod1"], "y",
+             lazy.spawn(myTerm+" -e youtube-viewer"),
+             desc='youtube-viewer'
+             ),
+         Key(
+             [mod, "mod1"], "a",
+             lazy.spawn(myTerm+" -e ncpamixer"),
+             desc='ncpamixer'
              ),
 ]
 
 ##### GROUPS #####
 group_names = [("1", {'layout': 'monadtall'}),
-               ("2", {'layout': 'monadtall'}),
-               ("3", {'layout': 'monadtall'})]
+               ("2", {'layout': 'monadwide'}),
+               ("3", {'layout': 'max'}),
+               ("4", {'layout': 'monadtall'}),
+               ("5", {'layout': 'floating'})]
 
 groups = [Group(name, **kwargs) for name, kwargs in group_names]
 
@@ -225,7 +292,7 @@ layout_theme = {"border_width": 2,
 
 ##### THE LAYOUTS #####
 layouts = [
-    #layout.MonadWide(**layout_theme),
+    layout.MonadWide(ratio = 0.75, **layout_theme),
     #layout.Bsp(**layout_theme),
     #layout.Stack(stacks=2, **layout_theme),
     #layout.Columns(**layout_theme),
@@ -467,12 +534,21 @@ def init_widgets_screen1():
     widgets_screen1 = init_widgets_list()
     return widgets_screen1                       # Slicing removes unwanted widgets on Monitors 1,3
 
+def init_widgets_screen2():
+    widgets_screen2 = init_widgets_list()
+    return widgets_screen2                       # Monitor 2 will display all widgets in widgets_list
+
 def init_screens():
-    return [Screen(top=bar.Bar(widgets=init_widgets_screen1(), opacity=0.95, size=20))]
+    return [Screen(top=bar.Bar(widgets=init_widgets_screen1(), opacity=0.95, size=20)),
+            Screen(top=bar.Bar(widgets=init_widgets_screen2(), opacity=0.95, size=20)),
+            Screen(top=bar.Bar(widgets=init_widgets_screen1(), opacity=0.95, size=20))]
+
 if __name__ in ["config", "__main__"]:
     screens = init_screens()
     widgets_list = init_widgets_list()
     widgets_screen1 = init_widgets_screen1()
+    widgets_screen2 = init_widgets_screen2()
+
 ##### DRAG FLOATING WINDOWS #####
 mouse = [
     Drag([mod], "Button1", lazy.window.set_position_floating(),
